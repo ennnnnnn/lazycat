@@ -1,1 +1,5 @@
-package lazycat
+package main
+
+func main()  {
+	
+}
