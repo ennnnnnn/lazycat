@@ -12,8 +12,8 @@ type RequestValues struct {
 	values *url.Values
 }
 
-func (this *RequestValues) Get(name string) RequestValue {
-	return RequestValue{parent: this, name: name}
+func (this *RequestValues) Get(name string) *RequestValue {
+	return &RequestValue{parent: this, name: name}
 }
 
 type RequestValue struct {
@@ -221,3 +221,32 @@ func (this *RequestValue) Match(str string) bool {
 	}
 	return v
 }
+/*
+ * 匹配一个值,输出字符串
+ */
+func (this *RequestValue) MatchOutString(str string) (string, error) {
+	tmp, err := this.StringOutError()
+	if err != nil {
+		return tmp, err
+	}
+	v, err := regexp.MatchString(str, tmp)
+	if err != nil {
+		return tmp, err
+	}
+	if v {
+		return tmp, nil
+	} else {
+		return tmp, errors.New("格式不匹配")
+	}
+}
+/*
+ * 获取电子邮箱
+ */
+func (this *RequestValue) Email() string {
+	tmp, err := this.MatchOutString("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")
+	if err != nil {
+		return ""
+	}
+	return tmp
+}
+
